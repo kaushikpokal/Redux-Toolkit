@@ -1,32 +1,96 @@
 import React, { useState } from "react";
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import validate from "../../services/validation";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from '../../store/auth/authSlice'
+
+const host = 'https://app.hiretechtalent.com/api';
 
 const Auth = () => {
 
-    const [url, setUrl] = useState();
-    const [key, setKey] = useState();
+    const auth = useSelector(state => state.auth.credentials);
+    const dispatch = useDispatch();
 
-    const login = () => {
-        console.warn(key)
+    const [formData, setFormData] = React.useState({
+        email: '',
+        password: '',
+    });
+
+    const handleChange = (i, val) => {
+        setFormData(state => ({
+            ...state,
+            [i]: val,
+        }));
+    };
+
+
+    // key = 2576040397
+    // url = https://app.wp-eventmanager.com
+
+
+    const loginProvider = ({ email, password }) => {
+        const body = new FormData();
+        body.append('email', email);
+        body.append('password', password);
+
+        console.log('Login Url is ===>>>', `${host}/talentLogin`);
+        return fetch(`${host}/talentLogin`, {
+            method: 'POST',
+            headers: {
+                Connection: 'keep-alive',
+            },
+            body: body,
+        })
+            .then(async res => {
+                return await res.json();
+            })
+            .catch(err => {
+                console.log('Errorrrrr');
+                return err;
+            });
+    }
+
+    const loginUser = async () => {
+        if (
+            validate('email', formData.email) &&
+            validate('required', formData.password)
+        ) {
+            const response = await loginProvider(formData);
+            if (response) {
+                if (response.credentials && response.user) {
+                    dispatch(login(response));
+                } else {
+                    console.warn("error1")
+                }
+            } else {
+                console.warn("error2")
+            }
+            console.warn("success")
+        } else {
+            console.warn("error3")
+
+        }
     }
 
     return (
         <View style={styles.container}>
             <Image style={styles.brand} source={require('./../../assets/icon.png')} />
             <Text style={styles.title}>SIGN IN</Text>
+            <Text style={styles.title}>{formData.email}</Text>
+            {auth.credentials ? <Text>Hello</Text> : <Text>Hello2 {auth.credentials}</Text>}
             <TextInput
                 placeholder="Site URL"
-                onChangeText={(text) => setUrl(text)}
-                value={url}
+                onChangeText={e => handleChange('email', e)}
+                value={formData.email}
                 style={styles.input}
             />
             <TextInput
                 placeholder="API key"
-                onChange={(text) => setKey(text)}
-                value={key}
+                onChangeText={e => handleChange('password', e)}
+                value={formData.password}
                 style={styles.input}
             />
-            <TouchableOpacity style={styles.button}><Text style={styles.buttonText} onPress={() => login()}>SIGN IN</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button}><Text style={styles.buttonText} onPress={() => loginUser()}>SIGN IN</Text></TouchableOpacity>
         </View>
     )
 }
