@@ -8,6 +8,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { logoutAuth } from '../store/auth/authSlice';
+
 
 const Counter = () => {
     const count = useSelector((state) => state.counter.value)
@@ -16,6 +18,7 @@ const Counter = () => {
     return (
         <View style={styles.body}>
             <Text style={styles.title}>Increment / Decrement Counter</Text>
+            <TouchableOpacity style={styles.button} onPress={() => dispatch(logoutAuth())}><Text>Logout</Text></TouchableOpacity>
             <View style={styles.center}>
                 <Text style={styles.number}>{count}</Text>
                 <View style={styles.container}>
@@ -25,6 +28,7 @@ const Counter = () => {
                     <TouchableOpacity style={styles.button} onPress={() => dispatch(clear())}><Text style={styles.buttonText}>Clear</Text></TouchableOpacity>
                 </View>
             </View>
+            
             <Text style={styles.secondTitle}>Using react redux toolkit </Text>
         </View>
     );

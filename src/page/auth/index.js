@@ -8,7 +8,7 @@ const host = 'https://app.hiretechtalent.com/api';
 
 const Auth = () => {
 
-    const auth = useSelector(state => state.auth.credentials);
+    // const auth = useSelector(state => state.auth.credentials);
     const dispatch = useDispatch();
 
     const [formData, setFormData] = React.useState({
@@ -65,10 +65,9 @@ const Auth = () => {
             } else {
                 console.warn("error2")
             }
-            console.warn("success")
+            console.warn("Please use correct password")
         } else {
-            console.warn("error3")
-
+            console.warn("Credentials does not match")
         }
     }
 
@@ -77,7 +76,6 @@ const Auth = () => {
             <Image style={styles.brand} source={require('./../../assets/icon.png')} />
             <Text style={styles.title}>SIGN IN</Text>
             <Text style={styles.title}>{formData.email}</Text>
-            {auth.credentials ? <Text>Hello</Text> : <Text>Hello2 {auth.credentials}</Text>}
             <TextInput
                 placeholder="Site URL"
                 onChangeText={e => handleChange('email', e)}

@@ -11,7 +11,7 @@ const persistConfig = {
   blacklist: [],
   // Optionally, you can specify which reducer states you want to persist
   // whitelist: ['auth'],
-  whitelist:["auth"]
+  // whitelist:["auth"]
 };
 
 
